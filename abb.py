@@ -35,18 +35,18 @@ class ArbolBinariodeBusqueda(object):
 
         if y is None:
             self.raiz = cancion
-        elif cancion.interprete < y.data.interprete:
+        elif cancion.data.interprete < y.data.interprete:
             y.left = cancion
         else:
             y.right = cancion
         
         self.elems += 1
     
-    def in_order(self,x):
-        if x is not None:
-            self.in_order(x.left)
-            j.append((x.data.interprete,x.data.titulo))
-            self.in_order(x.right)
+    def _inOrderTrav(self, subTree):
+        if subTree is not None :
+            self._inOrderTrav(subTree.left)
+            print("[{0}:{1}] ".format(subTree.data.interprete, subTree.data.titulo))
+            self._inOrderTrav(subTree.right)
 
     
     def eliminarCancion(self,interprete,titulo):

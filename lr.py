@@ -11,6 +11,7 @@ class ArbolDeCanciones(object):
         'Recibe un archivo con una lista de canciones, crea objetos tipo cancion con los elementos y luego los añade al arbol'
 
         with open(lista, 'r') as f:
+            f = 'Katy Perry;Dark Horse;/home/gpalma/MiMusica/katy_perry-dark_horse.mp3'
             for i in f:
                 C_info=i.split('\t')
                 C_info[-1]=C_info[-1].strip()
@@ -32,9 +33,21 @@ class ArbolDeCanciones(object):
 
     def mostrarLR(self):
         'Hacer recorrido in - order para imprimir el arbol ##'
-        j = []
-        self.contenido.in_order(self.contenido.raiz)
-        print(*j)
+        self.contenido._inOrderTrav(self.contenido.raiz)
 
 
     
+help = ArbolDeCanciones()
+aiuda = Cancion('elriko','rikura','lazukulenzia')
+help.contenido.agregar(aiuda)
+hola = Cancion('elriko','gg','lazukulenzia')
+help.contenido.agregar(hola)
+help.mostrarLR()
+efe = Cancion('elriko','c1','lazukulenzia')
+help.contenido.agregar(efe)
+print(' ')
+why = Cancion('riquelme','c2','lazukulenzia')
+help.contenido.agregar(why)
+x = help.contenido.buscarCancion('elriko','rikura')
+print(x.data.ubicacion)
+help.mostrarLR()
