@@ -60,6 +60,7 @@ class ArbolBinariodeBusqueda(object):
         'Recibe el interprete y titulo de la cancion a eliminar'
 
         z = self.buscarCancion(interprete,titulo)
+        print(z.data.titulo)
 
         if z is None:
             print('La cancion no se encuentra en la lista')
@@ -83,6 +84,8 @@ class ArbolBinariodeBusqueda(object):
         else:
             if y == y.parent.left:
                 y.parent.left = x
+            else:
+                y.parent.right = x
         
         if y != z:
             z.data = y.data
@@ -98,11 +101,18 @@ class ArbolBinariodeBusqueda(object):
                     x = x.left
                 else:
                     x = x.right
-            else:
+            elif interprete == x.data.interprete:
                 if titulo < x.data.titulo:
                     x = x.left
                 else:
                     x = x.right
+
+        if x.left is not None:
+            if x.left.data.titulo == titulo:
+                x = x.left
+        if x.right is not None:
+            if x.right.data.titulo == titulo:
+                x = x.right
         return x
     
     def guardar_inorder(self,subTree,arreglo = []):
@@ -128,3 +138,67 @@ class ArbolBinariodeBusqueda(object):
             y = y.parent
         return y
     
+    def eliminarCancion1(self,subTree,interprete,titulo): 
+  
+        z = self.buscarCancion(interprete,titulo)  
+
+        if z is None:
+            return
+
+        if z.data.interprete != subTree.data.interprete: 
+            if z.data.interprete < subTree.data.interprete: 
+                subTree.left = self.eliminarCancion1(subTree.left, interprete,titulo) 
+        
+
+            elif z.data.interprete < subTree.data.interprete: 
+                subTree.right = self.eliminarCancion1(subTree.right, interprete,titulo)
+            
+            else: 
+                if subTree.left is None : 
+                    temp = subTree.right  
+                    subTree = None 
+                    return temp  
+                    
+                elif subTree.right is None : 
+                    temp = subTree.left  
+                    subTree = None
+                    return temp 
+
+                temp = subTree.right
+                while temp is not None:
+                    temp = temp.left
+        
+                subTree.data = temp.data
+        
+                subTree.right = self.eliminarCancion1(subTree.right , interprete,titulo) 
+
+        elif z.data.interprete == subTree.data.interprete:
+            if z.data.titulo < subTree.data.titulo: 
+                subTree.left = self.eliminarCancion1(subTree.left, interprete,titulo) 
+
+            elif z.data.titulo < subTree.data.titulo: 
+                subTree.right = self.eliminarCancion1(subTree.right, interprete,titulo)
+            
+            else: 
+            
+                if subTree.left is None : 
+                    temp = subTree.right  
+                    subTree = None 
+                    return temp  
+                    
+                elif subTree.right is None : 
+                    temp = subTree.left  
+                    subTree = None
+                    return temp 
+        
+                temp = subTree.right
+                while temp is not None:
+                    temp = temp.left
+        
+                subTree.key = temp.key 
+        
+                subTree.right = self.eliminarCancion1(subTree.right , interprete,titulo) 
+    
+    
+        return subTree  
+        
