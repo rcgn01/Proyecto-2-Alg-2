@@ -50,14 +50,12 @@ class ArbolBinariodeBusqueda(object):
         
         self.elems += 1
 
-    
     def _inOrderTrav(self, subTree):
         if subTree is not None :
             self._inOrderTrav(subTree.left)
             print("[{0}:{1}] ".format(subTree.data.interprete, subTree.data.titulo))
             self._inOrderTrav(subTree.right)
-
-    
+   
     def eliminarCancion(self,interprete,titulo):
         'Recibe el interprete y titulo de la cancion a eliminar'
 
@@ -106,6 +104,14 @@ class ArbolBinariodeBusqueda(object):
                 else:
                     x = x.right
         return x
+    
+    def guardar_inorder(self,subTree,arreglo = []):
+        #Realiza el recorrido in orden del arbol pero en vez de imprimir los nodos los guarda en un arreglo
+        if subTree is not None:
+            self.guardar_inorder(subTree.left,arreglo)
+            arreglo.append(subTree)
+            self.guardar_inorder(subTree.right,arreglo)
+        return arreglo
     
     def sucesor(self,x):
         'Devuelve el sucesor de x'

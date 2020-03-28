@@ -3,7 +3,7 @@ import os.path
 
 class Cancion(object):
 
-    def __init__(self,titulo,interprete,ubicacion):
+    def __init__(self,interprete,titulo,ubicacion):
         'Recibe como entrada el titulo, interprete y ubicacion de la cancion. Si ninguno de estos datos es None y la ubicacion es valida, se crea el objeto de tipo cancion.'
 
         assert(titulo != None and interprete != None and self.es_ubicacion_valida(ubicacion)) #Precondicion
@@ -12,17 +12,16 @@ class Cancion(object):
         self.interprete = str(interprete)
         self.ubicacion = str(ubicacion)
     
-    def es_ubicacion_valida(self,self.ubicacion):
+    def es_ubicacion_valida(self, ubicacion):
         'Verifica si la ubicacion dada existe en la computadora usando la libreria os.path de Python.'
-        path = input("")
-        if os.path.exists(path):
-            archivo, ext= os.path.splitext(path)
+        if os.path.exists(ubicacion):
+            archivo, ext= os.path.splitext(ubicacion)
             if ext == str(".mp3") or ext == str(".wav"):
-                print("True")
+                return True
             else:
-                print("False")
+                return False
         else:
-            print("False")
+            return False
             
     def obtener_titulo(self):
         'Retorna el titulo de la cancion.'
