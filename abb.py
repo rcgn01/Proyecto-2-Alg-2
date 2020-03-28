@@ -1,3 +1,5 @@
+from cancion import Cancion
+
 class Nodo(object):
     def __init__(self,cancion):
         'Crea un nodo con objetos tipo Cancion'
@@ -35,12 +37,19 @@ class ArbolBinariodeBusqueda(object):
 
         if y is None:
             self.raiz = cancion
-        elif cancion.data.interprete < y.data.interprete:
-            y.left = cancion
-        else:
-            y.right = cancion
+        elif cancion.data.interprete != y.data.interprete:
+                if cancion.data.interprete < y.data.interprete:
+                   y.left = cancion
+                else:
+                    y.right = cancion
+        elif cancion.data.interprete == y.data.interprete:
+            if cancion.data.titulo < y.data.titulo:
+                y.left = cancion
+            else:
+                y.right = cancion
         
         self.elems += 1
+
     
     def _inOrderTrav(self, subTree):
         if subTree is not None :
