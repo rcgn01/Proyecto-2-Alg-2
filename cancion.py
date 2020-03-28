@@ -1,8 +1,5 @@
-
+import os
 import os.path
-from pathlib import Path
-
-
 
 class Cancion(object):
 
@@ -15,26 +12,18 @@ class Cancion(object):
         self.interprete = str(interprete)
         self.ubicacion = str(ubicacion)
     
-    def es_ubicacion_valida(self,u):
+    def es_ubicacion_valida(self,self.ubicacion):
         'Verifica si la ubicacion dada existe en la computadora usando la libreria os.path de Python.'
-
-        # try:
-        #     assert(u != None) #Precondicion
-        # except:
-        #     return False
-        # pass
-        
-        # return os.path.exists(u) 
-
-        if '.mp3' or '.wav' in u:
-            my_file = Path(u)
-            return my_file.is_file()
+        path = input("")
+        if os.path.exists(path):
+            archivo, ext= os.path.splitext(path)
+            if ext == str(".mp3") or ext == str(".wav"):
+                print("True")
+            else:
+                print("False")
         else:
-            print('Formato de archivo no valido')
-        
+            print("False")
             
-        
-
     def obtener_titulo(self):
         'Retorna el titulo de la cancion.'
         assert(True) #Precondicion
