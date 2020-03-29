@@ -60,7 +60,6 @@ class ArbolBinariodeBusqueda(object):
         'Recibe el interprete y titulo de la cancion a eliminar'
 
         z = self.buscarCancion(interprete,titulo)
-        print(z.data.titulo)
 
         if z is None:
             print('La cancion no se encuentra en la lista')
@@ -137,68 +136,15 @@ class ArbolBinariodeBusqueda(object):
             x = y
             y = y.parent
         return y
+
+    def minimo(self):
+        x = self.raiz
+        while x.left is not None:
+            x = x.left
+        return x
     
-    def eliminarCancion1(self,subTree,interprete,titulo): 
-  
-        z = self.buscarCancion(interprete,titulo)  
-
-        if z is None:
-            return
-
-        if z.data.interprete != subTree.data.interprete: 
-            if z.data.interprete < subTree.data.interprete: 
-                subTree.left = self.eliminarCancion1(subTree.left, interprete,titulo) 
-        
-
-            elif z.data.interprete < subTree.data.interprete: 
-                subTree.right = self.eliminarCancion1(subTree.right, interprete,titulo)
-            
-            else: 
-                if subTree.left is None : 
-                    temp = subTree.right  
-                    subTree = None 
-                    return temp  
-                    
-                elif subTree.right is None : 
-                    temp = subTree.left  
-                    subTree = None
-                    return temp 
-
-                temp = subTree.right
-                while temp is not None:
-                    temp = temp.left
-        
-                subTree.data = temp.data
-        
-                subTree.right = self.eliminarCancion1(subTree.right , interprete,titulo) 
-
-        elif z.data.interprete == subTree.data.interprete:
-            if z.data.titulo < subTree.data.titulo: 
-                subTree.left = self.eliminarCancion1(subTree.left, interprete,titulo) 
-
-            elif z.data.titulo < subTree.data.titulo: 
-                subTree.right = self.eliminarCancion1(subTree.right, interprete,titulo)
-            
-            else: 
-            
-                if subTree.left is None : 
-                    temp = subTree.right  
-                    subTree = None 
-                    return temp  
-                    
-                elif subTree.right is None : 
-                    temp = subTree.left  
-                    subTree = None
-                    return temp 
-        
-                temp = subTree.right
-                while temp is not None:
-                    temp = temp.left
-        
-                subTree.key = temp.key 
-        
-                subTree.right = self.eliminarCancion1(subTree.right , interprete,titulo) 
-    
-    
-        return subTree  
-        
+    def maximo(self):
+        x = self.raiz
+        while x.right is not None:
+            x = x.right
+        return x

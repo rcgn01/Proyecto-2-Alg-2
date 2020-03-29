@@ -10,7 +10,7 @@ class ArbolDeCanciones(object):
     def agregarLista(self,lista):
         'Recibe un archivo con una lista de canciones, crea objetos tipo cancion con los elementos y luego los añade al arbol'
 
-        with open(ruta, 'r') as f:
+        with open(lista, 'r') as f:
             for i in f:
                 C_info=i.split('\t')
                 C_info[-1]=C_info[-1].strip()
@@ -39,31 +39,9 @@ class ArbolDeCanciones(object):
         self.contenido.eliminarCancion(interprete,titulo)
 
     def obtenerLR(self):
-        '??????'
-        pass
+        x = self.contenido.guardar_inorder(self.contenido.raiz)
+        return x
 
     def mostrarLR(self):
         'Hacer recorrido in - order para imprimir el arbol ##'
         self.contenido._inOrderTrav(self.contenido.raiz)
-
-
-    
-help = ArbolDeCanciones()
-# aiuda = Cancion('elriko','rikura','lazukulenzia')
-# help.contenido.agregar(aiuda)
-# hola = Cancion('elriko','gg','lazukulenzia')
-# help.contenido.agregar(hola)
-# help.mostrarLR()
-# efe = Cancion('elriko','c1','lazukulenzia')
-# help.contenido.agregar(efe)
-# print(' ')
-# why = Cancion('riquelme','c2','lazukulenzia')
-# help.contenido.agregar(why)
-# x = help.contenido.buscarCancion('elriko','rikura')
-# print(x.data.ubicacion)
-# help.mostrarLR()
-# print('')
-# help.eliminarCancion('elriko','gg')
-ruta = 'C:/Users/RCGAM/Desktop/canciones/aiuda.txt'
-help.agregarLista(ruta)
-help.mostrarLR()

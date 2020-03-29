@@ -18,17 +18,14 @@ MORADO = (100,70,150)
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 300
 
-ANCHO_BOTON = SCREEN_WIDTH/6
-ALTO_BOTON = SCREEN_HEIGHT/10
+ANCHO_BOTON = SCREEN_WIDTH//6
+ALTO_BOTON = SCREEN_HEIGHT//10
 
-x_pausa , y_pausa = SCREEN_WIDTH//4 , 3*SCREEN_HEIGHT//4
-x_play , y_play = 3*SCREEN_WIDTH//4 , 3*SCREEN_HEIGHT//4
-
-x_boton , y_boton = SCREEN_WIDTH * 0.2 , 3*SCREEN_HEIGHT//4
+x_boton , y_boton = (SCREEN_WIDTH * 0.2), 3*SCREEN_HEIGHT//4
 
 def mostrar_texto(texto,x,y,fuente):
     TextSurf, TextRect = text_objects(texto, fuente)
-    TextRect.center = ((x/2),(y/2))
+    TextRect.center = ((x//2),(y//2))
     pantalla.blit(TextSurf, TextRect)
     pygame.display.update()
     # time.sleep(2)
@@ -54,15 +51,16 @@ def dibujar_fondo():
     fondo = pygame.transform.scale(imagen_fondo,[SCREEN_WIDTH,SCREEN_HEIGHT])
     pantalla.blit(fondo,[20,20])
 
-def dibujar_boton(texto,x,y,ancho,alto,ic,ac):
+def dibujar_boton(texto,x,y,ancho,alto,ic,ac,accion = None):
     
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
 
     if x+ancho > mouse[0] > x and y+alto > mouse[1] > y:
         pygame.draw.rect(pantalla, ac,(x,y,ancho,alto))
-        if click[0] == 1 :
-                print('click')
+        if click[0] == 1 and accion != None:
+                accion()
+
             
     else:
         pygame.draw.rect(pantalla, ic,(x,y,ancho,alto))
@@ -92,16 +90,16 @@ def main():
         dibujar_boton('Pausa',x_boton,y_boton,ANCHO_BOTON,ALTO_BOTON,MORADO,AZUL)
         dibujar_boton('MostrarLR',x_boton*2,y_boton,ANCHO_BOTON,ALTO_BOTON,MORADO,AZUL)
         dibujar_boton('Sig. Cancion',3*x_boton,y_boton,ANCHO_BOTON,ALTO_BOTON,MORADO,AZUL)
-        
-        
+        dibujar_boton('Agregar Lista',4*x_boton,y_boton,ANCHO_BOTON,ALTO_BOTON,MORADO,AZUL)
+
         pygame.display.update()
-        clock.tick(20)
+        clock.tick(15)
 
 pygame.init()
 pantalla = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 pygame.display.set_caption('Administrador de Música')
 pantalla.fill(GRIS)
-imagen_fondo = pygame.image.load('')
+# imagen_fondo = pygame.image.load('')
 # imagen_boton = pygame.image.load("../img/button.png")
 # imagen_boton_pressed = pygame.image.load("../img/buttonPressed.png")
 clock = pygame.time.Clock()
