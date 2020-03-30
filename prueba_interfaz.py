@@ -6,9 +6,6 @@ from reproductor import reproductor
 import sys
 
 
-#Se crea el reproductor llamando al TAD reproductor
-reproductor = reproductor('C:/Users/RCGAM/Desktop/proyecto de mrd/canciones/aiuda.txt')
-
 #Definicion de los colores usando RGB.
 NEGRO = (0,0,0)
 BLANCO =(255,255,255)
@@ -24,7 +21,6 @@ SCREEN_HEIGHT = 300
 ANCHO_BOTON = SCREEN_WIDTH//6
 ALTO_BOTON = SCREEN_HEIGHT//10
 
-
 class Boton(object):
     'Clase que facilita la creacion de botones'
 
@@ -35,10 +31,8 @@ class Boton(object):
         self.position = position
         self.size = size
 
-        # self._rect = pygame.Rect(position,size)
         self._rect = self.imagen.get_rect()
         self._rect.topleft = self.position
-
 
 
     def dibujar(self, pantalla,event,accion=None):
@@ -56,14 +50,14 @@ class Boton(object):
                         #Se realiza la accion que se prporciono. Para cada accion posible se define una funcion mas abajo
                         #Acciones posibles: reproducir, pausar, detener, saltar cancion, mostrar lista ... 
                         if accion == 'pausar':
-                            if reproductor.estaTocandoCancion():
-                                reproductor.pause()
+                            if rp.estaTocandoCancion():
+                                rp.pause()
                             else:
-                                reproductor.reproducir()
+                                rp.reproducir()
                         elif accion == 'saltar':
-                            reproductor.sigCancion()
+                            rp.sigCancion()
                         elif accion == 'detener':
-                            reproductor.parar()
+                            rp.parar()
                         elif accion == 'agregar':
                             #Solicitar ruta del archivo
                             #reproductor.cargarCancion()
@@ -77,6 +71,34 @@ class Boton(object):
             pygame.draw.rect(pantalla, GRIS,(self.position,self.size))
             pantalla.blit(self.imagen, self._rect)
 
+def ruta():
+    'Pantalla inicial donde se pide al usuario suministrar la ruta al archivo txt con la informacion de las canciones a reproducir'
+
+    screen = pygame.display.set_mode((700, 360))
+    path = ""
+    font = pygame.font.Font(None, 30)
+    font1 = pygame.font.Font(None, 16)
+    textsurf,textrect = objeto_texto('Introduzca la ruta al archivo txt con la informacion de las canciones a reproducir : '  , font1)
+    textrect.center = ((3*SCREEN_WIDTH//4)-20,SCREEN_HEIGHT/4+(SCREEN_HEIGHT/6))
+
+    while True:
+        for evt in pygame.event.get():
+            if evt.type == KEYDOWN:
+                if evt.key == K_BACKSPACE:
+                    path = path[:-1]
+                elif evt.key == K_RETURN: #Si se presiona enter
+                    return path
+                else:
+                    path += evt.unicode
+            elif evt.type == QUIT:
+                sys.exit()
+        screen.fill(GRIS)
+        block = font.render(path, True, NEGRO)
+        rect = block.get_rect()
+        rect.center = screen.get_rect().center
+        screen.blit(textsurf,textrect)
+        screen.blit(block, rect)
+        pygame.display.flip()
 
 def objeto_texto(texto, font):
     'Recibe un string con el texto que se quiere crear y la fuente a usar. Retorna una superficie con dicho texto'
@@ -91,11 +113,13 @@ def dibujar_fondo(pantalla,imagen_fondo):
 
 def main():
     'Bucle principal del reproductor'
-
-
     pygame.init() #Inicializacion pygame
     clock = pygame.time.Clock()
     texto = pygame.font.Font('freesansbold.ttf',10)
+
+
+    path = ruta() #Se muestra la pantalla principal donde se pide la ruta al archivo txt
+    rp = reproductor(str(path)) #Se crea el reproductor llamando al TAD reproductor
 
     pantalla = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT)) #Creacion de la ventana del reproductor
     pygame.display.set_caption('Administrador de Música') #titulo de la ventana
@@ -131,9 +155,9 @@ def main():
 
         #Se crea el texto que muestra la cancion que se esta reproduciendo y lo muestra
         pygame.draw.rect(pantalla,GRIS,(SCREEN_WIDTH/4,(SCREEN_HEIGHT/4)+10,SCREEN_WIDTH/2,(SCREEN_HEIGHT/4)-20))
-        titulo = str(reproductor.actual.data.titulo)
-        autor = str(reproductor.actual.data.interprete)
-        if reproductor.estaTocandoCancion():
+        titulo = str(rp.actual.data.titulo)
+        autor = str(rp.actual.data.interprete)
+        if rp.estaTocandoCancion():
             info = 'Reproduciendo : ' +autor +', ' +titulo
         else:
             info = 'Reproductor pausado : ' +autor +', '+titulo
@@ -144,8 +168,6 @@ def main():
         #Actualizacion de pantalla
         pygame.display.update()
         clock.tick(15)
-
-
 
 if __name__ == "__main__":
     main()
