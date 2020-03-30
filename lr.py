@@ -27,6 +27,7 @@ class ArbolDeCanciones(object):
                     i += 1
 
                 if '.mp3' or '.wav' in info[2]:
+                    print(info)
                     cancion=Cancion(info[0], info[1], info[2])
                     self.contenido.agregar(cancion)
                 else:

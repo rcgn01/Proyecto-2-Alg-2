@@ -1,6 +1,6 @@
 from lr import ArbolDeCanciones
-import pygame
 from pygame import mixer
+
 
 class reproductor(object):
 
@@ -10,9 +10,8 @@ class reproductor(object):
         self.lista.agregarLista(canciones)
         self.queue = self.lista.obtenerLR()
         self.actual = self.queue[0]
-        pygame.mixer.init()
-        # for i in self.queue:
-            # pygame.mixer.music.queue(i.data.ubicacion)
+        # mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+        # mixer.load(self.actual.ubicacion)
     
     def crearReproductor(self, cancion):
         pygame.mixer.music.load(cancion.ubicacion)
@@ -22,8 +21,8 @@ class reproductor(object):
         self.actual = cancion
         pygame.mixer.music.load(self.actual)
     
-    def reproducir(self,ubicacion):
-        pygame.mixer.music.play()
+    def reproducir(self):
+        mixer.music.play()
 
     def parar(self):
         pygame.mixer.music.stop()
@@ -35,11 +34,19 @@ class reproductor(object):
             pygame.mixer.music.unpause()
 
     def estaTocandoCancion(self):
-        if pygame.mixer.music.play() == True:
-            return True 
-        elif pygame.mixer.music.play() == False:
+        try:
+            if pygame.mixer.music.play() == True:
+                return True 
+            elif pygame.mixer.music.play() == False:
+                return False
+        except :
             return False
+    
     
     def sigCancion(self):
         pygame.mixer.music.skip()
             
+
+# pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+# rep = reproductor('C:/Users/RCGAM/Desktop/proyecto de mrd/canciones/aiuda.txt')
+# rep.reproducir()

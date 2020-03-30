@@ -5,9 +5,11 @@ from lr import ArbolDeCanciones
 from reproductor import reproductor
 import sys
 
-reproductor = reproductor('C:/Users/RCGAM/Desktop/canciones/aiuda.txt')
 
+#Se crea el reproductor llamando al TAD reproductor
+reproductor = reproductor('C:/Users/RCGAM/Desktop/proyecto de mrd/canciones/aiuda.txt')
 
+#Definicion de los colores usando RGB.
 NEGRO = (0,0,0)
 BLANCO =(255,255,255)
 GRIS = (169,169,169)
@@ -15,94 +17,135 @@ ROJO = (255,0,0)
 AZUL = (0,0,255)
 VERDE = (0,255,0)
 MORADO = (100,70,150)
+
+#Ancho y alto de botones y ventana
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 300
-
 ANCHO_BOTON = SCREEN_WIDTH//6
 ALTO_BOTON = SCREEN_HEIGHT//10
 
-x_boton , y_boton = (SCREEN_WIDTH * 0.2), 3*SCREEN_HEIGHT//4
 
-def mostrar_texto(texto,x,y,fuente):
-    TextSurf, TextRect = text_objects(texto, fuente)
-    TextRect.center = ((x//2),(y//2))
-    pantalla.blit(TextSurf, TextRect)
-    pygame.display.update()
-    # time.sleep(2)
+class Boton(object):
+    'Clase que facilita la creacion de botones'
 
-def lista():
+    def __init__(self, position, size, imagen):
+        'Recibe la posicion, el tamaño y la imagen del boton que se desea crear'
+        self.imagen = pygame.image.load(imagen)
+        self.imagen = pygame.transform.scale(self.imagen,size)
+        self.position = position
+        self.size = size
 
-    ventana = pygame.display.set_mode((200,200))
-    pygame.display.set_caption('Lista de reproducción')
-
-    while True:
-        for event in pygame.event.get():
-            print(event)
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+        # self._rect = pygame.Rect(position,size)
+        self._rect = self.imagen.get_rect()
+        self._rect.topleft = self.position
 
 
-def text_objects(text, font):
-    textSurface = font.render(text, True, (200,0,0))
-    return textSurface, textSurface.get_rect()
 
-def dibujar_fondo():
+    def dibujar(self, pantalla,event,accion=None):
+        'Dibuja el boton. Si se hace click sobre el boton y se proporciona una accion a realizar, se realiza la accion'
+        self._rect = self.imagen.get_rect()
+        self._rect.topleft = self.position
+        
+        # Verifica si se hace click sobre el boton al dibujarlo
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1: # Si se presiona el click izquierdo
+                if self._rect.collidepoint(event.pos): #Si el cursor esta sobre le boton
+                    pygame.draw.rect(pantalla, (190,190,190),(self.position,self.size))
+                    pantalla.blit(self.imagen, self._rect)
+                    if accion is not None:
+                        #Se realiza la accion que se prporciono. Para cada accion posible se define una funcion mas abajo
+                        #Acciones posibles: reproducir, pausar, detener, saltar cancion, mostrar lista ... 
+                        if accion == 'pausar':
+                            if reproductor.estaTocandoCancion():
+                                reproductor.pause()
+                            else:
+                                reproductor.reproducir()
+                        elif accion == 'saltar':
+                            reproductor.sigCancion()
+                        elif accion == 'detener':
+                            reproductor.parar()
+                        elif accion == 'agregar':
+                            #Solicitar ruta del archivo
+                            #reproductor.cargarCancion()
+                            pass
+                        elif accion == 'mostrarlista':
+                            #Obtener la lista del reproductor y luego de alguna manera hacer que salga en la pantalla. Aqui tambien se hara la funcion eliminar
+                            pass
+
+        else:
+            #En este caso no se ha hecho click sobre el boton
+            pygame.draw.rect(pantalla, GRIS,(self.position,self.size))
+            pantalla.blit(self.imagen, self._rect)
+
+
+def objeto_texto(texto, font):
+    'Recibe un string con el texto que se quiere crear y la fuente a usar. Retorna una superficie con dicho texto'
+    texto_surf = font.render(texto, True,NEGRO)
+    return texto_surf, texto_surf.get_rect()
+
+def dibujar_fondo(pantalla,imagen_fondo):
+    'Funcion que escala el fondo al tamaño de la ventana y lo muestra'
+    #Actualmente no la estamos usando pero la dejo por si le ponemos un fondo
     fondo = pygame.transform.scale(imagen_fondo,[SCREEN_WIDTH,SCREEN_HEIGHT])
     pantalla.blit(fondo,[20,20])
 
-def dibujar_boton(texto,x,y,ancho,alto,ic,ac,accion = None):
-    
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-
-    if x+ancho > mouse[0] > x and y+alto > mouse[1] > y:
-        pygame.draw.rect(pantalla, ac,(x,y,ancho,alto))
-        if click[0] == 1 and accion != None:
-                accion()
-
-            
-    else:
-        pygame.draw.rect(pantalla, ic,(x,y,ancho,alto))
-    
-    smallText = pygame.font.Font("freesansbold.ttf",10)
-    textSurf, textRect = text_objects(texto, smallText)
-    textRect.center = ( (x+(ancho/2)), (y+(alto/2)) )
-    pantalla.blit(textSurf, textRect)
-
 def main():
+    'Bucle principal del reproductor'
+
+
+    pygame.init() #Inicializacion pygame
+    clock = pygame.time.Clock()
+    texto = pygame.font.Font('freesansbold.ttf',10)
+
+    pantalla = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT)) #Creacion de la ventana del reproductor
+    pygame.display.set_caption('Administrador de Música') #titulo de la ventana
+    pantalla.fill(GRIS) #Se colorea el fondo de gris
+
+    #Creacion de los botones usando la clase boton
+    play_pausa = Boton((15,230),(ANCHO_BOTON,ALTO_BOTON+10),'C:/Users/RCGAM/OneDrive/Documentos/Ene Mar 20/Lab Alg2/Proyecto II/imagenes/pausa.png')
+    cargar = Boton((300,230),(ANCHO_BOTON,ALTO_BOTON+10),'C:/Users/RCGAM/OneDrive/Documentos/Ene Mar 20/Lab Alg2/Proyecto II/imagenes/add1.png')
+    detener = Boton((110,230),(ANCHO_BOTON,ALTO_BOTON+10),'C:/Users/RCGAM/OneDrive/Documentos/Ene Mar 20/Lab Alg2/Proyecto II/imagenes/detener.png')
+    sig = Boton((205,230),(ANCHO_BOTON,ALTO_BOTON+10),'C:/Users/RCGAM/OneDrive/Documentos/Ene Mar 20/Lab Alg2/Proyecto II/imagenes/siguiente1.png')
+    mostrarlr = Boton((400,230),(ANCHO_BOTON,ALTO_BOTON+10),'C:/Users/RCGAM/OneDrive/Documentos/Ene Mar 20/Lab Alg2/Proyecto II/imagenes/lista.png')
+
+    #Creacion del cuadro donde se muestra la cancion que se esta reproduciendo
+    cuadro = pygame.image.load('C:/Users/RCGAM/OneDrive/Documentos/Ene Mar 20/Lab Alg2/Proyecto II/imagenes/cuadro1.png')
+    cuadro = pygame.transform.scale(cuadro,(300,130))
+    cuadro_rect = cuadro.get_rect()
+    cuadro_rect.center = (SCREEN_WIDTH/4+(SCREEN_WIDTH/4),(SCREEN_HEIGHT/4)+45)
+    pantalla.blit(cuadro,cuadro_rect)
+
 
     while True:
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
         
-        pygame.draw.rect(pantalla,MORADO,(SCREEN_WIDTH/4,SCREEN_HEIGHT/4,SCREEN_WIDTH/2,SCREEN_HEIGHT/3))
-        texto = pygame.font.Font('freesansbold.ttf',30)
-        fuente2 = pygame.font.Font('freesansbold.ttf',10)
+            #Se dibujan los botones y se verifica si se hace click sobre ellos
+            play_pausa.dibujar(pantalla,event,'pausar')
+            sig.dibujar(pantalla,event,'saltar')
+            mostrarlr.dibujar(pantalla,event,'mostrarlista')
+            detener.dibujar(pantalla,event,'detener')
+            cargar.dibujar(pantalla,event,'agregar')
+
+        #Se crea el texto que muestra la cancion que se esta reproduciendo y lo muestra
+        pygame.draw.rect(pantalla,GRIS,(SCREEN_WIDTH/4,(SCREEN_HEIGHT/4)+10,SCREEN_WIDTH/2,(SCREEN_HEIGHT/4)-20))
         titulo = str(reproductor.actual.data.titulo)
         autor = str(reproductor.actual.data.interprete)
-        info = 'Reproduciendo : ' +autor +', ' +titulo
-        textsurf,textrect = text_objects(info  , fuente2)
+        if reproductor.estaTocandoCancion():
+            info = 'Reproduciendo : ' +autor +', ' +titulo
+        else:
+            info = 'Reproductor pausado : ' +autor +', '+titulo
+        textsurf,textrect = objeto_texto(info  , texto)
         textrect.center = ((SCREEN_WIDTH/4+(SCREEN_WIDTH/4),SCREEN_HEIGHT/4+(SCREEN_HEIGHT/6)))
         pantalla.blit(textsurf,textrect)
-        
-        dibujar_boton('Pausa',x_boton,y_boton,ANCHO_BOTON,ALTO_BOTON,MORADO,AZUL)
-        dibujar_boton('MostrarLR',x_boton*2,y_boton,ANCHO_BOTON,ALTO_BOTON,MORADO,AZUL)
-        dibujar_boton('Sig. Cancion',3*x_boton,y_boton,ANCHO_BOTON,ALTO_BOTON,MORADO,AZUL)
-        dibujar_boton('Agregar Lista',4*x_boton,y_boton,ANCHO_BOTON,ALTO_BOTON,MORADO,AZUL)
 
+        #Actualizacion de pantalla
         pygame.display.update()
         clock.tick(15)
 
-pygame.init()
-pantalla = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-pygame.display.set_caption('Administrador de Música')
-pantalla.fill(GRIS)
-# imagen_fondo = pygame.image.load('')
-# imagen_boton = pygame.image.load("../img/button.png")
-# imagen_boton_pressed = pygame.image.load("../img/buttonPressed.png")
-clock = pygame.time.Clock()
+
 
 if __name__ == "__main__":
     main()

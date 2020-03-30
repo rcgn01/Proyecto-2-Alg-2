@@ -5,8 +5,10 @@ class Cancion(object):
 
     def __init__(self,interprete,titulo,ubicacion):
         'Recibe como entrada el titulo, interprete y ubicacion de la cancion. Si ninguno de estos datos es None y la ubicacion es valida, se crea el objeto de tipo cancion.'
-
-        assert(titulo != None and interprete != None and self.es_ubicacion_valida(ubicacion)) #Precondicion
+        try:
+            assert(titulo != None and interprete != None and self.es_ubicacion_valida(ubicacion)) #Precondicion
+        except:
+            print('Ruta de cancion no valida')
 
         self.titulo = str(titulo)
         self.interprete = str(interprete)
